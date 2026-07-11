@@ -1,0 +1,6 @@
+{
+  "key.category.replacebuild.rpb": "ReplaceBuild",
+  "key.replacebuild.toggle": "Toggle ReplaceBuild",
+  "replacebuild.enabledMessage": "ReplaceBuild Enabled",
+  "replacebuild.disabledMessage": "ReplaceBuild Disabled"
+}
