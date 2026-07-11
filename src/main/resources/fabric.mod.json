@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "id": "replacebuild",
+  "version": "${version}",
+  "name": "ReplaceBuild",
+  "description": "",
+  "authors": [],
+  "contact": {},
+  "license": "All-Rights-Reserved",
+  "icon": "assets/replacebuild/icon.png",
+  "environment": "client",
+  "entrypoints": {
+    "client": [
+      "com.murren.replacebuild.client.ReplacebuildClient"
+    ],
+    "main": [
+      "com.murren.replacebuild.Replacebuild"
+    ]
+  },
+  "mixins": [
+    "replacebuild.mixins.json",
+    {
+      "config": "replacebuild.client.mixins.json",
+      "environment": "client"
+    }
+  ],
+  "depends": {
+    "fabricloader": ">=${loader_version}",
+    "fabric-api": "*",
+    "minecraft": "${minecraft_version}"
+  }
+}
