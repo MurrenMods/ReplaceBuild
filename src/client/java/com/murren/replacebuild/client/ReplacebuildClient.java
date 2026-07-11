@@ -56,6 +56,11 @@ public class ReplacebuildClient implements ClientModInitializer {
         if (!world.isClientSide() || !(player instanceof LocalPlayer clientPlayer)) {
             return InteractionResult.PASS;
         }
+
+        // Allow normal building if sneaking
+        if (player.isCrouching())
+            return InteractionResult.PASS;
+
         if (client.gameMode == null) {
             return InteractionResult.PASS;
         }
