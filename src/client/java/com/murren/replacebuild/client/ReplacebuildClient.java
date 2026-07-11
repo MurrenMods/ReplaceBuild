@@ -33,7 +33,7 @@ public class ReplacebuildClient implements ClientModInitializer {
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             if (client.player == null) return;
             while (toggleKey.consumeClick()) {
-                Minecraft.getInstance().gui.setSubtitle(Component.literal(isEnabled ? "ReplaceBuild Disabled" : "ReplaceBuild Enabled"));
+                Minecraft.getInstance().gui.setOverlayMessage(Component.literal(isEnabled ? "ReplaceBuild Disabled" : "ReplaceBuild Enabled"), true);
                 isEnabled = !isEnabled;
             }
         });
