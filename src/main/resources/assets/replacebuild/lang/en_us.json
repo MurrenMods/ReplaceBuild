@@ -1,6 +1,10 @@
 {
   "key.category.replacebuild.rpb": "ReplaceBuild",
   "key.replacebuild.toggle": "Toggle ReplaceBuild",
+  "key.replacebuild.togglelistmode": "Toggle List Mode",
   "replacebuild.enabledMessage": "ReplaceBuild Enabled",
-  "replacebuild.disabledMessage": "ReplaceBuild Disabled"
+  "replacebuild.disabledMessage": "ReplaceBuild Disabled",
+  "replacebuild.listmode.blacklist": "List Mode - Blacklist",
+  "replacebuild.listmode.whitelist": "List Mode - Whitelist",
+  "replacebuild.listmode.disabled": "List Mode - Disabled"
 }

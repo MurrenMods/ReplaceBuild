@@ -17,18 +17,22 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import org.lwjgl.glfw.GLFW;
 
 public class ReplacebuildClient implements ClientModInitializer {
 
     private static boolean isEnabled = false;
+    private static Mode mode = Mode.DISABLED;
 
     private static KeyMapping toggleKey;
+    private static KeyMapping modeKey;
     private static final KeyMapping.Category CATEGORY = KeyMapping.Category.register(Identifier.fromNamespaceAndPath("replacebuild", "rpb"));
     @Override
     public void onInitializeClient() {
-        toggleKey = KeyBindingHelper.registerKeyBinding(new KeyMapping("key.replacebuild.toggle", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_KP_4, CATEGORY));
+        toggleKey = KeyBindingHelper.registerKeyBinding(new KeyMapping("key.replacebuild.toggle", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_KP_1, CATEGORY));
+        modeKey = KeyBindingHelper.registerKeyBinding(new KeyMapping("key.replacebuild.togglelistmode", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_KP_2, CATEGORY));
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             if (client.player == null) return;
@@ -36,9 +40,30 @@ public class ReplacebuildClient implements ClientModInitializer {
                 Minecraft.getInstance().gui.setOverlayMessage(Component.translatable(isEnabled ? "replacebuild.disabledMessage" : "replacebuild.enabledMessage"), false);
                 isEnabled = !isEnabled;
             }
+            while (modeKey.consumeClick()) {
+                cycleMode();
+                Minecraft.getInstance().gui.setOverlayMessage(Component.translatable("replacebuild.listmode." + mode.name().toLowerCase()), false);
+            }
         });
 
         UseBlockCallback.EVENT.register(this::onUseBlock);
+    }
+
+    private void cycleMode() {
+        switch (mode) {
+            case DISABLED:
+                mode = Mode.BLACKLIST;
+                break;
+            case BLACKLIST:
+                mode = Mode.WHITELIST;
+                break;
+            case WHITELIST:
+                mode = Mode.DISABLED;
+        }
+    }
+
+    private enum Mode {
+        BLACKLIST, WHITELIST, DISABLED
     }
 
     private InteractionResult onUseBlock(Player player,
@@ -70,16 +95,43 @@ public class ReplacebuildClient implements ClientModInitializer {
         }
 
         ItemStack stack = player.getItemInHand(hand);
+        ItemStack offhand = player.getOffhandItem();
         if (!(stack.getItem() instanceof BlockItem)) {
             return InteractionResult.PASS;
         }
 
+        boolean cont = false;
         BlockPos targetPos = hitResult.getBlockPos();
+        BlockState targetState = world.getBlockState(targetPos);
+
+        switch (mode) {
+            case DISABLED:
+                cont = true;
+                break;
+            case BLACKLIST:
+                if(offhand.getItem() instanceof BlockItem)
+                {
+                    if(targetState.getBlock() != ((BlockItem) offhand.getItem()).getBlock()) {
+                        cont = true;
+                    }
+                }
+                break;
+            case WHITELIST:
+                if(offhand.getItem() instanceof BlockItem)
+                {
+                    if(targetState.getBlock() == ((BlockItem) offhand.getItem()).getBlock()) {
+                        cont = true;
+                    }
+                }
+        }
+        if(!cont)
+            return InteractionResult.FAIL;
+
 
         // Skip if the block is already replaceable
         // vanilla already handles that case as a normal replace.
-        if (world.getBlockState(targetPos).getCollisionShape(world, targetPos).isEmpty()
-                && world.getBlockState(targetPos).canBeReplaced()) {
+        if (targetState.getCollisionShape(world, targetPos).isEmpty()
+                && targetState.canBeReplaced()) {
             return InteractionResult.PASS;
         }
 
