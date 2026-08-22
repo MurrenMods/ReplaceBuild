@@ -2,9 +2,12 @@
   "key.category.replacebuild.rpb": "ReplaceBuild",
   "key.replacebuild.toggle": "Toggle ReplaceBuild",
   "key.replacebuild.togglelistmode": "Toggle List Mode",
-  "replacebuild.enabledMessage": "ReplaceBuild Enabled",
-  "replacebuild.disabledMessage": "ReplaceBuild Disabled",
-  "replacebuild.listmode.blacklist": "List Mode - Blacklist",
-  "replacebuild.listmode.whitelist": "List Mode - Whitelist",
-  "replacebuild.listmode.disabled": "List Mode - Disabled"
+  "key.replacebuild.togglesoftmode": "Toggle Soft Mode",
+  "replacebuild.enabledMessage": "[RB] ReplaceBuild Enabled",
+  "replacebuild.disabledMessage": "[RB] ReplaceBuild Disabled",
+  "replacebuild.listmode.blacklist": "[RB] List Mode - Blacklist",
+  "replacebuild.listmode.whitelist": "[RB] List Mode - Whitelist",
+  "replacebuild.listmode.disabled": "[RB] List Mode - Disabled",
+  "replacebuild.enabledsmMessage": "[RB] Soft Mode Enabled",
+  "replacebuild.disabledsmMessage": "[RB] Soft Mode Disabled"
 }

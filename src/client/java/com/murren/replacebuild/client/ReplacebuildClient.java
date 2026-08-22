@@ -25,14 +25,17 @@ public class ReplacebuildClient implements ClientModInitializer {
 
     private static boolean isEnabled = false;
     private static Mode mode = Mode.DISABLED;
+    private static boolean softMode = true;
 
     private static KeyMapping toggleKey;
     private static KeyMapping modeKey;
+    private static KeyMapping softKey;
     private static final KeyMapping.Category CATEGORY = KeyMapping.Category.register(Identifier.fromNamespaceAndPath("replacebuild", "rpb"));
     @Override
     public void onInitializeClient() {
         toggleKey = KeyBindingHelper.registerKeyBinding(new KeyMapping("key.replacebuild.toggle", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_KP_1, CATEGORY));
         modeKey = KeyBindingHelper.registerKeyBinding(new KeyMapping("key.replacebuild.togglelistmode", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_KP_2, CATEGORY));
+        softKey = KeyBindingHelper.registerKeyBinding(new KeyMapping("key.replacebuild.togglesoftmode", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_KP_3, CATEGORY));
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             if (client.player == null) return;
@@ -43,6 +46,10 @@ public class ReplacebuildClient implements ClientModInitializer {
             while (modeKey.consumeClick()) {
                 cycleMode();
                 Minecraft.getInstance().gui.setOverlayMessage(Component.translatable("replacebuild.listmode." + mode.name().toLowerCase()), false);
+            }
+            while (softKey.consumeClick()) {
+                Minecraft.getInstance().gui.setOverlayMessage(Component.translatable(isEnabled ? "replacebuild.disabledsmMessage" : "replacebuild.enabledsmMessage"), false);
+                softMode = !softMode;
             }
         });
 
@@ -104,6 +111,14 @@ public class ReplacebuildClient implements ClientModInitializer {
         BlockPos targetPos = hitResult.getBlockPos();
         BlockState targetState = world.getBlockState(targetPos);
 
+        // Handle soft mode
+
+        if(softMode && targetState.getBlock() == ((BlockItem)stack.getItem()).getBlock())
+        {
+            return InteractionResult.FAIL;
+        }
+
+        // Handle list mode
         switch (mode) {
             case DISABLED:
                 cont = true;
